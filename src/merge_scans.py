@@ -9,7 +9,7 @@ class MergeScans:
         
         rospy.Subscriber("/laser_scanner/scan", LaserScan, self._callback)
         
-        self.pub = rospy.Publisher('/laser_scanner/scan_merged', LaserScan, queue_size=10)
+        self.pub = rospy.Publisher('/scan', LaserScan, queue_size=10)
         
         self.ready_to_publish = False
         self.merged_msg = LaserScan()
@@ -25,6 +25,7 @@ class MergeScans:
             self.merged_msg = data
         elif self.merged_msg != None:
             self.merged_msg.angle_max = data.angle_max
+            self.merged_msg.header = data.header
             self.merged_msg.ranges += data.ranges
             self.merged_msg.intensities += data.intensities
     
