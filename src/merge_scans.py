@@ -9,7 +9,7 @@ TOPIC_NAME = "/scan"
 
 class MergeScans:
     def __init__(self):
-        rospy.init_node('scan_merge', anonymous=True)
+        rospy.init_node("scan_merge", anonymous=True)
 
         pub_topic_name = rospy.get_param("~topic_name", TOPIC_NAME)
         source_topic = rospy.get_param("~source_topic", SOURCE_TOPIC)
@@ -28,21 +28,21 @@ class MergeScans:
                 self.pub.publish(self.ready_msg)
 
     def _callback(self, data):
-        if data.angle_min < -2.:  # new cycle
+        if data.angle_min < -2.0:  # new cycle
             self.merged_msg = data
-        elif self.merged_msg != None:
+        elif self.merged_msg is not None:
             self.merged_msg.angle_max = data.angle_max
             self.merged_msg.header = data.header
             self.merged_msg.ranges += data.ranges
             self.merged_msg.intensities += data.intensities
 
-        if data.angle_max > 2.:  # complete range -> publish
+        if data.angle_max > 2.0:  # complete range -> publish
             self.ready_to_publish = True
             self.ready_msg = self.merged_msg
             self.merged_msg = LaserScan()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         MergeScans()
     except rospy.ROSInterruptException:
